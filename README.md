@@ -26,6 +26,7 @@ Fill in the **UID** fields with the Free Fire user IDs of the players you want t
 ### Step 5 – (Optional) Enable Extra Options
 - ✅ **Auto Leave** – Automatically leaves after the emote is sent.
 - ⚡ **Lag Mode** – Enables lag mode for the session.
+- 🏁 **Auto Ready** – Automatically sends a "Ready" signal after the emote is sent, so your team can start the match without manually clicking Ready in-game.
 
 ### Step 6 – Choose and Send an Emote
 Scroll down to the **Emotes** grid (344 emotes available). Click the **Send** button on any emote card to trigger it.
@@ -48,6 +49,7 @@ The **Response** box at the top will show you the result of the request.
 - Make sure you are **inside Social Island** in-game before sending the emote.
 - The UIDs must belong to players currently present on Social Island for the emote to appear.
 - This tool sends requests to the B25 Cheats backend API (`/send_emote_social` endpoint for Social Island).
+- Use the **Ready** button (or enable **Auto Ready**) after joining a team to send a ready signal (`/ready` endpoint), allowing your squad to start the match.
 
 ---
 
