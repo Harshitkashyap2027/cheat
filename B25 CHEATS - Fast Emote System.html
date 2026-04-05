@@ -151,6 +151,16 @@
         }
         .btn-lag:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 24px rgba(239,68,68,.35)}
         .btn-lag:disabled{opacity:.5;cursor:not-allowed}
+        .btn-ready{
+            width:100%;padding:14px;font-size:15px;font-weight:700;
+            border:none;border-radius:var(--radius);cursor:pointer;
+            background:linear-gradient(135deg,var(--green),#15803d);color:#fff;
+            transition:all .2s;font-family:inherit;
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            box-shadow:0 4px 16px rgba(34,197,94,.25);margin-top:8px;
+        }
+        .btn-ready:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,197,94,.35)}
+        .btn-ready:disabled{opacity:.5;cursor:not-allowed}
 
         /* ── Mode Toggle ── */
         .mode-toggle{display:flex;gap:8px;margin-bottom:14px}
@@ -1142,7 +1152,7 @@
             <button id="start-lag-btn" class="btn-lag">
                 <i class="fas fa-bolt"></i> Start Lag
             </button>
-            <button id="ready-btn" class="btn-lag" style="background:linear-gradient(135deg,var(--green),#15803d);margin-top:8px">
+            <button id="ready-btn" class="btn-ready">
                 <i class="fas fa-flag-checkered"></i> Ready
             </button>
         </div>
