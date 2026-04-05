@@ -1598,8 +1598,7 @@ function getHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]'
 function saveHistory(a){localStorage.setItem(HIST_KEY,JSON.stringify(a.slice(0,50)))}
 function addHistory(emoteName,ok,detail){
     const h=getHistory();
-    const now=new Date();
-    const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+    const time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
     h.unshift({emoteName,ok,detail,time});
     saveHistory(h);
     renderHistory();
@@ -1703,8 +1702,10 @@ async function doSend(btn,card,eid,emoteName){
     if(!uids.length){setResult('❌ Enter at least one UID.');return}
     const autoLeave=document.getElementById('auto-leave-checkbox')?.checked;
     const doRepeat=document.getElementById('repeat-checkbox')?.checked;
-    const delay=Math.max(0,parseInt(document.getElementById('send-delay')?.value||500));
-    const repeats=doRepeat?Math.max(1,Math.min(50,parseInt(document.getElementById('repeat-count')?.value||3))):1;
+    const rawDelay=parseInt(document.getElementById('send-delay')?.value,10);
+    const delay=isNaN(rawDelay)?500:Math.max(0,rawDelay);
+    const rawRepeats=parseInt(document.getElementById('repeat-count')?.value,10);
+    const repeats=doRepeat?Math.max(1,Math.min(50,isNaN(rawRepeats)?3:rawRepeats)):1;
     btn.disabled=true;btn.classList.add('sending');
     let lastOk=false;
     for(let i=0;i<repeats;i++){
