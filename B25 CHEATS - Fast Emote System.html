@@ -1132,10 +1132,18 @@
                     <span class="box"><i class="fas fa-check"></i></span>
                     <span><i class="fas fa-bolt" style="margin-right:4px;color:var(--red)"></i> Lag Mode</span>
                 </label>
+                <label class="check">
+                    <input type="checkbox" id="auto-ready-checkbox">
+                    <span class="box"><i class="fas fa-check"></i></span>
+                    <span><i class="fas fa-flag-checkered" style="margin-right:4px;color:var(--green)"></i> Auto Ready</span>
+                </label>
             </div>
 
             <button id="start-lag-btn" class="btn-lag">
                 <i class="fas fa-bolt"></i> Start Lag
+            </button>
+            <button id="ready-btn" class="btn-lag" style="background:linear-gradient(135deg,var(--green),#15803d);margin-top:8px">
+                <i class="fas fa-flag-checkered"></i> Ready
             </button>
         </div>
 
@@ -1403,6 +1411,7 @@ document.addEventListener('DOMContentLoaded',function(){
         if(currentMode==='team'&&!tc){res.textContent='Error: Enter a team code.';return}
         if(!uids.length){res.textContent='Error: Enter at least one UID.';return}
         const autoLeave=document.getElementById('auto-leave-checkbox').checked;
+        const autoReady=document.getElementById('auto-ready-checkbox').checked;
         const card=btn.closest('.emote-card');
         res.textContent='Sending...';btn.disabled=true;btn.classList.add('sending');btn.textContent='...';
         const payload={server,emote_id:eid,uids,auto_leave:autoLeave,mode:currentMode};
@@ -1419,6 +1428,17 @@ document.addEventListener('DOMContentLoaded',function(){
             card.classList.add(ok?'send-ok':'send-err');
             btn.style.background=ok?'var(--green)':'var(--red)';btn.style.color='#fff';btn.textContent=ok?'Sent!':'Failed';
             setTimeout(()=>{btn.style.background='';btn.style.color='';btn.textContent='Send'},1500);
+            if(ok&&autoReady){
+                const readyPayload={server,uids};
+                if(currentMode==='team')readyPayload.team_code=tc;
+                fetch('/ready',{method:'POST',headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify(readyPayload)
+                }).then(r=>r.json()).then(rd=>{
+                    res.textContent=JSON.stringify(d,null,2)+'\n\n[Auto Ready]\n'+JSON.stringify(rd,null,2);
+                }).catch(()=>{
+                    res.textContent=JSON.stringify(d,null,2)+'\n\n[Auto Ready] Error communicating with server.';
+                });
+            }
         })
         .catch(()=>{
             res.textContent='Error communicating with server.';
@@ -1444,6 +1464,26 @@ document.addEventListener('DOMContentLoaded',function(){
         }).then(r=>r.json()).then(d=>{res.textContent=JSON.stringify(d,null,2)})
         .catch(()=>{res.textContent='Error communicating with server.'})
         .finally(()=>{lagBtn.disabled=false;lagBtn.innerHTML='<i class="fas fa-bolt"></i> Start Lag'});
+    });
+
+    /* ── Ready ── */
+    const readyBtn=document.getElementById('ready-btn');
+    readyBtn.addEventListener('click',function(){
+        const server=document.getElementById('server').value;
+        const tc=document.getElementById('team-code').value.trim();
+        const uids=[];
+        document.querySelectorAll('.uid-input').forEach(i=>{const v=i.value.trim();if(v)uids.push(v)});
+        if(!server){res.textContent='Error: Select a server.';return}
+        if(currentMode==='team'&&!tc){res.textContent='Error: Enter a team code.';return}
+        if(!uids.length){res.textContent='Error: Enter at least one UID.';return}
+        readyBtn.disabled=true;readyBtn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending Ready...';res.textContent='Sending ready...';
+        const payload={server,uids};
+        if(currentMode==='team')payload.team_code=tc;
+        fetch('/ready',{method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+        }).then(r=>r.json()).then(d=>{res.textContent=JSON.stringify(d,null,2)})
+        .catch(()=>{res.textContent='Error communicating with server.'})
+        .finally(()=>{readyBtn.disabled=false;readyBtn.innerHTML='<i class="fas fa-flag-checkered"></i> Ready'});
     });
 });
 
